@@ -1,0 +1,71 @@
+<div class="container">
+  <h1>Java Angular Task Manager</h1>
+
+  <app-task-form (taskCreated)="refreshAfterAction()"></app-task-form>
+
+  <div class="card">
+    <div class="toolbar">
+      <h2>Task List</h2>
+
+      <div class="filter-box">
+        <label for="statusFilter">Filter by Status</label>
+        <select
+          id="statusFilter"
+          [(ngModel)]="selectedStatus"
+          (change)="filterTasks()"
+        >
+          <option value="">ALL</option>
+          <option value="PENDING">PENDING</option>
+          <option value="IN_PROGRESS">IN_PROGRESS</option>
+          <option value="COMPLETED">COMPLETED</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p *ngIf="isLoading">Loading tasks...</p>
+
+    <div *ngIf="!isLoading && tasks.length === 0" class="empty-state">
+      No tasks found.
+    </div>
+
+    <div *ngIf="!isLoading && tasks.length > 0" class="task-list">
+      <div class="task-card" *ngFor="let task of tasks">
+        <div class="task-header">
+          <h3>{{ task.title }}</h3>
+          <span class="badge" [ngClass]="task.status">{{ task.status }}</span>
+        </div>
+
+        <p class="task-desc">
+          {{ task.description || "No description provided." }}
+        </p>
+
+        <div class="task-actions">
+          <button
+            type="button"
+            (click)="markInProgress(task)"
+            [disabled]="task.status === 'IN_PROGRESS'"
+          >
+            In Progress
+          </button>
+
+          <button
+            type="button"
+            (click)="markCompleted(task)"
+            [disabled]="task.status === 'COMPLETED'"
+          >
+            Complete
+          </button>
+
+          <button
+            type="button"
+            class="delete-btn"
+            (click)="deleteTask(task.id)"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
